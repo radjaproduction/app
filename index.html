@@ -25,6 +25,16 @@
     .notice{background:#fff8e7;border:1px solid #fde68a;color:#92400e;border-radius:14px;padding:12px 14px;font-size:12px;line-height:1.5;margin-bottom:18px}
     .module-frame-view{position:fixed;inset:0;background:var(--bg);z-index:20;display:flex;flex-direction:column}.module-frame-bar{height:58px;display:flex;align-items:center;gap:12px;padding:10px 14px;background:#fff;border-bottom:1px solid var(--border);box-shadow:0 2px 10px #1a234012}.module-frame-bar button{border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--primary);font-weight:800;padding:8px 12px;cursor:pointer}.module-frame-title{font-weight:900;font-size:15px}.module-frame{width:100%;flex:1;border:0;background:#fff}
     @media(max-width:760px){.modules{grid-template-columns:repeat(2,1fr)}}@media(max-width:460px){.shell{padding:14px}.stats{grid-template-columns:1fr}.topbar{align-items:flex-start}.module{min-height:130px}}
+    /* Owner Center visual theme */
+    :root{--bg:#0b2342;--card:#102d51;--text:#f5f8ff;--muted:#9eb7df;--primary:#1685ff;--border:#254b73;--danger:#ff6d86}
+    body{background:radial-gradient(circle at 50% -10%,#173963 0,#0f2b4c 38%,#0b2342 75%);background-attachment:fixed}
+    .shell{max-width:760px;padding:22px 16px 112px}.topbar{margin-bottom:20px;align-items:center}.topbar>div:first-child{display:flex;align-items:center;gap:12px}.topbar>div:first-child:before{content:'';width:54px;height:54px;border-radius:16px;display:block;background:#0b2342 url('icon-192.png') center/cover no-repeat;box-shadow:0 0 22px #1b6fc966}.topbar h1{font-size:22px;letter-spacing:-.02em}.welcome{color:#4b9cff;font-size:14px}.topbar .btn{background:#231536;color:#ff7892;border:1px solid #7d3159;border-radius:13px;font-size:13px}
+    .notice{display:flex;align-items:center;gap:14px;background:linear-gradient(110deg,#072d72,#08255c);border:1px solid #1676ef;border-radius:18px;padding:16px 18px;color:#c4d9fa}.notice:before{content:'i';display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#52b5ff,#0752d8 70%);border:1px solid #4fafff;color:#fff;font:italic 900 30px Georgia;box-shadow:0 0 18px #087bff88}.notice{font-size:13px}.notice::after{content:''}.stats{grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0 28px}.stat{position:relative;overflow:hidden;background:linear-gradient(150deg,#0b2b66,#071f50);border:1px solid #1d4e92;border-radius:18px;padding:18px 14px 24px;min-height:156px;box-shadow:inset 0 1px #ffffff0a}.stat:after{content:'';position:absolute;left:-10%;right:-10%;bottom:-17px;height:48px;border-top:2px solid #1886ff;border-radius:50%;transform:rotate(-5deg);opacity:.9}.stat:nth-child(3):after{border-color:#42ddcf}.stat-label{color:#b8cdf0;font-size:11px;line-height:1.3}.stat-value{font-size:30px;margin-top:22px;color:#fff}.stat:before{content:'▣';position:absolute;right:13px;top:20px;color:#4ca5ff;font-size:19px}.stat:nth-child(2):before{content:'♟'}.stat:nth-child(3):before{content:'▰';color:#45dbc9}.stat-value:after{display:block;font-size:11px;font-weight:600;color:#91acd6;margin-top:9px}.stat:nth-child(1) .stat-value:after{content:'Total input'}.stat:nth-child(2) .stat-value:after{content:'Total pegawai'}.stat:nth-child(3) .stat-value:after{content:'Total payroll'}
+    #ownerShell>h2{font-size:18px!important;margin-bottom:14px!important}.modules{gap:12px}.module{position:relative;min-height:254px;padding:22px 20px;background:linear-gradient(145deg,#0a2c6b,#071f51);border:1px solid #1b4d91;border-radius:19px;box-shadow:inset 0 1px #ffffff0b,0 10px 25px #00113040;cursor:pointer;transition:transform .18s,border-color .18s,box-shadow .18s}.module:hover,.module:focus-visible{transform:translateY(-2px);border-color:#328cff;box-shadow:inset 0 1px #ffffff0b,0 12px 28px #00113066,0 0 0 2px #1685ff33;outline:none}.module:after{content:'›';position:absolute;right:18px;top:22px;width:31px;height:31px;border-radius:50%;display:grid;place-items:center;background:#163a78;color:#c7dcff;font-size:28px;line-height:25px}.module-icon{width:62px;height:62px;display:grid;place-items:center;border-radius:50%;font-size:32px;background:radial-gradient(circle at 35% 30%,#2a7ef0,#092c71);border:1px solid #2f8eff;box-shadow:0 0 18px #087bff55;margin-bottom:24px}.module:nth-child(3) .module-icon{background:radial-gradient(circle at 35% 30%,#f2a944,#543213);border-color:#da9a35}.module:nth-child(4) .module-icon{background:radial-gradient(circle at 35% 30%,#a96cff,#332060);border-color:#a778ff}.module h2{font-size:19px}.module p{font-size:13px;color:#9db8e4;line-height:1.5;min-height:40px}.module button{margin-top:16px;padding:10px 14px;background:#08265e;border:1px solid #116ce1;border-radius:10px;color:#208bff;font-size:13px;pointer-events:none}.module:nth-child(3) button{color:#ffc04f;border-color:#966826}.module:nth-child(4) button{color:#ba83ff;border-color:#7447b7}
+    .security-card{display:flex;align-items:center;gap:14px;margin-top:16px;padding:17px 18px;border:1px solid #1b4d91;border-radius:18px;background:#08275d;color:#fff}.security-card .security-icon{width:46px;height:46px;display:grid;place-items:center;border-radius:50%;background:#123b86;border:1px solid #3a8dff;font-size:23px}.security-card p{color:#9eb8df;font-size:12px;line-height:1.45;margin-top:4px}.bottom-nav{position:fixed;z-index:15;bottom:14px;left:50%;transform:translateX(-50%);width:min(728px,calc(100% - 28px));display:grid;grid-template-columns:repeat(4,1fr);padding:9px 6px;border:1px solid #1b4e99;border-radius:24px;background:#061f50ee;backdrop-filter:blur(14px);box-shadow:0 8px 28px #0008}.bottom-nav button{border:0;background:transparent;color:#8da9d5;font-size:11px;padding:5px 2px;cursor:pointer}.bottom-nav button span{display:block;font-size:21px;margin-bottom:4px}.bottom-nav button.active{color:#3396ff}.bottom-nav button.active span{filter:drop-shadow(0 0 7px #1685ff)}
+    .module-open .bottom-nav{display:none}
+    @media(max-width:460px){.shell{padding:16px 12px 108px}.topbar h1{font-size:19px}.topbar>div:first-child:before{width:47px;height:47px;font-size:33px}.topbar .btn{padding:9px 11px}.stats{gap:8px}.stat{padding:15px 10px 22px;min-height:142px}.stat-value{font-size:25px;margin-top:22px}.module{min-height:240px;padding:18px 15px}.module h2{font-size:17px}.module p{font-size:12px}}
+    #loginView{background:radial-gradient(circle at 50% 15%,#173963 0,#0f2b4c 42%,#0b2342 100%)}#loginView .panel{background:linear-gradient(145deg,#102d51,#0c2647);border:1px solid #2a527b;box-shadow:0 18px 50px #03132699;color:var(--text)}#loginView .brand{align-items:center}.brand-icon{background:#0b2342 url('icon-192.png') center/cover no-repeat!important;color:transparent!important;border:1px solid #315a80;box-shadow:0 0 20px #1b6fc966}.brand h1{font-size:21px}.brand p{color:#8eadd2}.field{margin:18px 0}.field label{color:#c7daf2}.field input{background:#0a2342;color:#fff;border:1px solid #315a80;border-radius:13px;padding:14px 46px 14px 14px}.field input::placeholder{color:#7190b7}.field input:focus{border-color:#1685ff;box-shadow:0 0 0 3px #1685ff22}.password-field{position:relative}.password-toggle{position:absolute;right:10px;bottom:8px;width:34px;height:34px;border:0;background:transparent;color:#82a9d2;cursor:pointer;border-radius:8px}.password-toggle:hover{background:#173963;color:#fff}#loginView .btn{box-shadow:0 6px 18px #1685ff44;margin-top:4px}
   </style>
 </head>
 <body>
@@ -33,7 +43,7 @@
       <div class="brand"><div class="brand-icon">R</div><div><h1>Radja Owner Center</h1><p>Akses pusat operasional owner</p></div></div>
       <form id="loginForm">
         <div class="field"><label for="email">Email owner</label><input id="email" type="email" autocomplete="username" required></div>
-        <div class="field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required></div>
+        <div class="field password-field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required><button id="passwordToggle" class="password-toggle" type="button" aria-label="Tampilkan password">👁</button></div>
         <div id="loginError" class="error hidden"></div>
         <button class="btn" type="submit">Masuk</button>
       </form>
@@ -42,16 +52,18 @@
 
   <main id="appView" class="hidden">
     <div id="ownerShell" class="shell">
-      <header class="topbar"><div><h1>Radja Owner Center</h1><p id="ownerEmail" class="welcome"></p></div><button id="logoutBtn" class="btn">Keluar</button></header>
+      <header class="topbar"><div><div><h1>Radja Owner Center</h1><p id="ownerEmail" class="welcome"></p></div></div><button id="logoutBtn" class="btn">Keluar&nbsp; ⇥</button></header>
       <div class="notice">Ini adalah tahap awal aplikasi pusat owner. Empat modul lama tetap menjadi sumber data selama proses penggabungan bertahap.</div>
-      <section class="stats"><div class="stat"><div class="stat-label">Input pekerjaan</div><div id="inputCount" class="stat-value">—</div></div><div class="stat"><div class="stat-label">Pegawai</div><div id="employeeCount" class="stat-value">—</div></div><div class="stat"><div class="stat-label">Payroll periode aktif</div><div id="payrollTotal" class="stat-value">—</div></div></section>
+      <section class="stats"><div class="stat"><div class="stat-label">INPUT PEKERJAAN</div><div id="inputCount" class="stat-value">—</div></div><div class="stat"><div class="stat-label">PEGAWAI</div><div id="employeeCount" class="stat-value">—</div></div><div class="stat"><div class="stat-label">PAYROLL PERIODE AKTIF</div><div id="payrollTotal" class="stat-value">—</div></div></section>
       <h2 style="font-size:16px;margin:0 0 12px">Modul operasional</h2>
       <section class="modules">
-        <article class="module"><div class="module-icon">💰</div><h2>Payroll</h2><p>Rekap gaji, pinjaman, tambahan, dan slip.</p><button data-module="payroll">Buka modul</button></article>
-        <article class="module"><div class="module-icon">👥</div><h2>Pegawai</h2><p>Master pegawai dan pemantauan input kerja.</p><button data-module="pegawai">Buka modul</button></article>
-        <article class="module"><div class="module-icon">📦</div><h2>Inventory</h2><p>Stok, barang masuk, dan barang keluar.</p><button data-module="inventory">Buka modul</button></article>
-        <article class="module"><div class="module-icon">🧾</div><h2>Pesanan</h2><p>Pesanan dan status proses produksi.</p><button data-module="pesanan">Buka modul</button></article>
+        <article class="module" data-module="payroll" role="button" tabindex="0"><div class="module-icon">💰</div><h2>Payroll</h2><p>Rekap gaji, pinjaman, tambahan, dan slip.</p><button type="button">Buka modul&nbsp; ›</button></article>
+        <article class="module" data-module="pegawai" role="button" tabindex="0"><div class="module-icon">👥</div><h2>Pegawai</h2><p>Master pegawai dan pemantauan input kerja.</p><button type="button">Buka modul&nbsp; ›</button></article>
+        <article class="module" data-module="inventory" role="button" tabindex="0"><div class="module-icon">📦</div><h2>Inventory</h2><p>Stok, barang masuk, dan barang keluar.</p><button type="button">Buka modul&nbsp; ›</button></article>
+        <article class="module" data-module="pesanan" role="button" tabindex="0"><div class="module-icon">🧾</div><h2>Pesanan</h2><p>Pesanan dan status proses produksi.</p><button type="button">Buka modul&nbsp; ›</button></article>
       </section>
+      <section class="security-card"><div class="security-icon">🛡</div><div><strong>Sistem aman &amp; terpusat</strong><p>Data Anda tersimpan aman dan selalu terintegrasi.</p></div></section>
+      <nav class="bottom-nav" aria-label="Navigasi Owner"><button class="active" type="button"><span>⌂</span>Dashboard</button><button type="button"><span>♟</span>Notifikasi</button><button type="button"><span>⚙</span>Pengaturan</button><button type="button"><span>●</span>Profil</button></nav>
     </div>
     <section id="moduleFrameView" class="module-frame-view hidden" aria-label="Modul aplikasi">
       <div class="module-frame-bar"><button id="moduleBackBtn" type="button">← Kembali</button><div id="moduleFrameTitle" class="module-frame-title">Modul</div></div>
@@ -87,21 +99,27 @@
       } catch (e) { $('inputCount').textContent='—'; $('employeeCount').textContent='—'; $('payrollTotal').textContent='—'; console.error(e); }
     }
     $('loginForm').addEventListener('submit', async e => { e.preventDefault(); const err=$('loginError'); err.classList.add('hidden'); const {data,error}=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value}); if(error){err.textContent='Login gagal: '+error.message;err.classList.remove('hidden');return} showApp(data.session); });
+    $('passwordToggle').addEventListener('click', () => { const input = $('password'), visible = input.type === 'text'; input.type = visible ? 'password' : 'text'; $('passwordToggle').textContent = visible ? '👁' : '🙈'; $('passwordToggle').setAttribute('aria-label', visible ? 'Tampilkan password' : 'Sembunyikan password'); });
     $('logoutBtn').addEventListener('click', async () => { await sb.auth.signOut(); showLogin(); });
     const moduleMap = { payroll:'https://radjaproduction.github.io/payroll/', pegawai:'https://radjaproduction.github.io/pegawai/', inventory:'https://radjaproduction.github.io/inventory/', pesanan:'https://radjaproduction.github.io/Pesanan/#home' };
     const moduleNames = { payroll:'Payroll', pegawai:'Pegawai', inventory:'Inventory', pesanan:'Pesanan' };
     const frameView = $('moduleFrameView'), frame = $('moduleFrame'), frameTitle = $('moduleFrameTitle');
-    document.querySelectorAll('[data-module]').forEach(btn => btn.addEventListener('click', () => {
-      const key = btn.dataset.module, target = moduleMap[key];
+    document.querySelectorAll('.module[data-module]').forEach(card => {
+      const openModule = () => {
+      const key = card.dataset.module, target = moduleMap[key];
       if (!target) return;
       frameTitle.textContent = moduleNames[key] || 'Modul';
       frame.src = target;
       frameView.classList.remove('hidden');
+      $('ownerShell').classList.add('module-open');
       history.pushState({ ownerModule: key }, '', `#${key}`);
-    }));
-    function closeModule(){ frame.src = 'about:blank'; frameView.classList.add('hidden'); if (location.hash) history.back(); }
+      };
+      card.addEventListener('click', openModule);
+      card.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openModule(); } });
+    });
+    function closeModule(){ frame.src = 'about:blank'; frameView.classList.add('hidden'); $('ownerShell').classList.remove('module-open'); if (location.hash) history.back(); }
     $('moduleBackBtn').addEventListener('click', closeModule);
-    window.addEventListener('popstate', () => { if (frameView && !frameView.classList.contains('hidden')) { frame.src='about:blank'; frameView.classList.add('hidden'); } });
+    window.addEventListener('popstate', () => { if (frameView && !frameView.classList.contains('hidden')) { frame.src='about:blank'; frameView.classList.add('hidden'); $('ownerShell').classList.remove('module-open'); } });
     sb.auth.onAuthStateChange((_event, session) => session ? showApp(session) : showLogin());
 
     if ('serviceWorker' in navigator) {
