@@ -53,17 +53,15 @@
   <main id="appView" class="hidden">
     <div id="ownerShell" class="shell">
       <header class="topbar"><div><div><h1>Radja Owner Center</h1><p id="ownerEmail" class="welcome"></p></div></div><button id="logoutBtn" class="btn">Keluar&nbsp; ⇥</button></header>
-      <div class="notice">Ini adalah tahap awal aplikasi pusat owner. Empat modul lama tetap menjadi sumber data selama proses penggabungan bertahap.</div>
       <section class="stats"><div class="stat"><div class="stat-label">INPUT PEKERJAAN</div><div id="inputCount" class="stat-value">—</div></div><div class="stat"><div class="stat-label">PEGAWAI</div><div id="employeeCount" class="stat-value">—</div></div><div class="stat"><div class="stat-label">PAYROLL PERIODE AKTIF</div><div id="payrollTotal" class="stat-value">—</div></div></section>
       <h2 style="font-size:16px;margin:0 0 12px">Modul operasional</h2>
       <section class="modules">
-        <article class="module" data-module="payroll" role="button" tabindex="0"><div class="module-icon">💰</div><h2>Payroll</h2><p>Rekap gaji, pinjaman, tambahan, dan slip.</p><button type="button">Buka modul&nbsp; ›</button></article>
-        <article class="module" data-module="pegawai" role="button" tabindex="0"><div class="module-icon">👥</div><h2>Pegawai</h2><p>Master pegawai dan pemantauan input kerja.</p><button type="button">Buka modul&nbsp; ›</button></article>
-        <article class="module" data-module="inventory" role="button" tabindex="0"><div class="module-icon">📦</div><h2>Inventory</h2><p>Stok, barang masuk, dan barang keluar.</p><button type="button">Buka modul&nbsp; ›</button></article>
-        <article class="module" data-module="pesanan" role="button" tabindex="0"><div class="module-icon">🧾</div><h2>Pesanan</h2><p>Pesanan dan status proses produksi.</p><button type="button">Buka modul&nbsp; ›</button></article>
+        <article class="module" data-module="payroll" role="button" tabindex="0"><div class="module-icon">💰</div><h2>Payroll</h2><p>Rekap gaji, pinjaman, tambahan, dan slip.</p></article>
+        <article class="module" data-module="pegawai" role="button" tabindex="0"><div class="module-icon">👥</div><h2>Pegawai</h2><p>Master pegawai dan pemantauan input kerja.</p></article>
+        <article class="module" data-module="inventory" role="button" tabindex="0"><div class="module-icon">📦</div><h2>Inventory</h2><p>Stok, barang masuk, dan barang keluar.</p></article>
+        <article class="module" data-module="pesanan" role="button" tabindex="0"><div class="module-icon">🧾</div><h2>Pesanan</h2><p>Pesanan dan status proses produksi.</p></article>
       </section>
       <section class="security-card"><div class="security-icon">🛡</div><div><strong>Sistem aman &amp; terpusat</strong><p>Data Anda tersimpan aman dan selalu terintegrasi.</p></div></section>
-      <nav class="bottom-nav" aria-label="Navigasi Owner"><button class="active" type="button"><span>⌂</span>Dashboard</button><button type="button"><span>♟</span>Notifikasi</button><button type="button"><span>⚙</span>Pengaturan</button><button type="button"><span>●</span>Profil</button></nav>
     </div>
     <section id="moduleFrameView" class="module-frame-view hidden" aria-label="Modul aplikasi">
       <div class="module-frame-bar"><button id="moduleBackBtn" type="button">← Kembali</button><div id="moduleFrameTitle" class="module-frame-title">Modul</div></div>
