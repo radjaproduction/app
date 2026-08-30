@@ -83,7 +83,7 @@
     }
     $('loginForm').addEventListener('submit', async e => { e.preventDefault(); const err=$('loginError'); err.classList.add('hidden'); const {data,error}=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value}); if(error){err.textContent='Login gagal: '+error.message;err.classList.remove('hidden');return} showApp(data.session); });
     $('logoutBtn').addEventListener('click', async () => { await sb.auth.signOut(); showLogin(); });
-    document.querySelectorAll('[data-module]').forEach(btn => btn.addEventListener('click', () => { const map={payroll:'../payroll/index.html',pegawai:'../pegawai/index.html',inventory:'../inventory/index.html',pesanan:'../Pesanan/index.html'}; const target=map[btn.dataset.module]; if(target) window.location.href=target; }));
+    document.querySelectorAll('[data-module]').forEach(btn => btn.addEventListener('click', () => { const map={payroll:'https://radjaproduction.github.io/payroll/',pegawai:'https://radjaproduction.github.io/pegawai/',inventory:'https://radjaproduction.github.io/inventory/',pesanan:'https://radjaproduction.github.io/Pesanan/#home'}; const target=map[btn.dataset.module]; if(target) window.location.href=target; }));
     sb.auth.onAuthStateChange((_event, session) => session ? showApp(session) : showLogin());
 
     if ('serviceWorker' in navigator) {
