@@ -23,6 +23,7 @@
     .shell{width:min(1120px,100%);margin:auto;padding:20px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px}.topbar .btn{width:auto;padding:10px 14px;background:#fff;color:var(--danger);border:1px solid #fecaca}.welcome{color:var(--muted);font-size:13px;margin-top:4px}
     .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}.stat,.module{background:#fff;border:1px solid var(--border);border-radius:18px;padding:18px}.stat-label{font-size:11px;color:var(--muted);font-weight:800;text-transform:uppercase}.stat-value{font-size:25px;font-weight:900;margin-top:8px}.modules{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.module{min-height:145px}.module-icon{font-size:28px;margin-bottom:18px}.module h2{font-size:15px}.module p{font-size:12px;color:var(--muted);line-height:1.45;margin-top:6px}.module button{margin-top:14px;padding:8px 11px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--primary);font-size:11px;font-weight:800;cursor:pointer}
     .notice{background:#fff8e7;border:1px solid #fde68a;color:#92400e;border-radius:14px;padding:12px 14px;font-size:12px;line-height:1.5;margin-bottom:18px}
+    .module-frame-view{position:fixed;inset:0;background:var(--bg);z-index:20;display:flex;flex-direction:column}.module-frame-bar{height:58px;display:flex;align-items:center;gap:12px;padding:10px 14px;background:#fff;border-bottom:1px solid var(--border);box-shadow:0 2px 10px #1a234012}.module-frame-bar button{border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--primary);font-weight:800;padding:8px 12px;cursor:pointer}.module-frame-title{font-weight:900;font-size:15px}.module-frame{width:100%;flex:1;border:0;background:#fff}
     @media(max-width:760px){.modules{grid-template-columns:repeat(2,1fr)}}@media(max-width:460px){.shell{padding:14px}.stats{grid-template-columns:1fr}.topbar{align-items:flex-start}.module{min-height:130px}}
   </style>
 </head>
@@ -40,7 +41,7 @@
   </main>
 
   <main id="appView" class="hidden">
-    <div class="shell">
+    <div id="ownerShell" class="shell">
       <header class="topbar"><div><h1>Radja Owner Center</h1><p id="ownerEmail" class="welcome"></p></div><button id="logoutBtn" class="btn">Keluar</button></header>
       <div class="notice">Ini adalah tahap awal aplikasi pusat owner. Empat modul lama tetap menjadi sumber data selama proses penggabungan bertahap.</div>
       <section class="stats"><div class="stat"><div class="stat-label">Input pekerjaan</div><div id="inputCount" class="stat-value">—</div></div><div class="stat"><div class="stat-label">Pegawai</div><div id="employeeCount" class="stat-value">—</div></div><div class="stat"><div class="stat-label">Payroll periode aktif</div><div id="payrollTotal" class="stat-value">—</div></div></section>
@@ -52,6 +53,10 @@
         <article class="module"><div class="module-icon">🧾</div><h2>Pesanan</h2><p>Pesanan dan status proses produksi.</p><button data-module="pesanan">Buka modul</button></article>
       </section>
     </div>
+    <section id="moduleFrameView" class="module-frame-view hidden" aria-label="Modul aplikasi">
+      <div class="module-frame-bar"><button id="moduleBackBtn" type="button">← Kembali</button><div id="moduleFrameTitle" class="module-frame-title">Modul</div></div>
+      <iframe id="moduleFrame" class="module-frame" title="Modul aplikasi"></iframe>
+    </section>
   </main>
 
   <script type="module">
@@ -83,7 +88,20 @@
     }
     $('loginForm').addEventListener('submit', async e => { e.preventDefault(); const err=$('loginError'); err.classList.add('hidden'); const {data,error}=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value}); if(error){err.textContent='Login gagal: '+error.message;err.classList.remove('hidden');return} showApp(data.session); });
     $('logoutBtn').addEventListener('click', async () => { await sb.auth.signOut(); showLogin(); });
-    document.querySelectorAll('[data-module]').forEach(btn => btn.addEventListener('click', () => { const map={payroll:'https://radjaproduction.github.io/payroll/',pegawai:'https://radjaproduction.github.io/pegawai/',inventory:'https://radjaproduction.github.io/inventory/',pesanan:'https://radjaproduction.github.io/Pesanan/#home'}; const target=map[btn.dataset.module]; if(target) window.location.href=target; }));
+    const moduleMap = { payroll:'https://radjaproduction.github.io/payroll/', pegawai:'https://radjaproduction.github.io/pegawai/', inventory:'https://radjaproduction.github.io/inventory/', pesanan:'https://radjaproduction.github.io/Pesanan/#home' };
+    const moduleNames = { payroll:'Payroll', pegawai:'Pegawai', inventory:'Inventory', pesanan:'Pesanan' };
+    const frameView = $('moduleFrameView'), frame = $('moduleFrame'), frameTitle = $('moduleFrameTitle');
+    document.querySelectorAll('[data-module]').forEach(btn => btn.addEventListener('click', () => {
+      const key = btn.dataset.module, target = moduleMap[key];
+      if (!target) return;
+      frameTitle.textContent = moduleNames[key] || 'Modul';
+      frame.src = target;
+      frameView.classList.remove('hidden');
+      history.pushState({ ownerModule: key }, '', `#${key}`);
+    }));
+    function closeModule(){ frame.src = 'about:blank'; frameView.classList.add('hidden'); if (location.hash) history.back(); }
+    $('moduleBackBtn').addEventListener('click', closeModule);
+    window.addEventListener('popstate', () => { if (frameView && !frameView.classList.contains('hidden')) { frame.src='about:blank'; frameView.classList.add('hidden'); } });
     sb.auth.onAuthStateChange((_event, session) => session ? showApp(session) : showLogin());
 
     if ('serviceWorker' in navigator) {
