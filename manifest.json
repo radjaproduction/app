@@ -1,9 +1,10 @@
 {
   "name": "Radja Owner Center",
   "short_name": "Radja Owner",
+  "id": "/owner/",
   "description": "Pusat operasional owner Radja",
-  "start_url": "./index.html",
-  "scope": "./",
+  "start_url": "/owner/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#f2f5fa",
   "theme_color": "#1A2A8C",
