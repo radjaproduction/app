@@ -23,7 +23,7 @@
     .shell{width:min(1120px,100%);margin:auto;padding:20px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px}.topbar .btn{width:auto;padding:10px 14px;background:#fff;color:var(--danger);border:1px solid #fecaca}.welcome{color:var(--muted);font-size:13px;margin-top:4px}
     .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}.stat,.module{background:#fff;border:1px solid var(--border);border-radius:18px;padding:18px}.stat-label{font-size:11px;color:var(--muted);font-weight:800;text-transform:uppercase}.stat-value{font-size:25px;font-weight:900;margin-top:8px}.modules{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.module{min-height:145px}.module-icon{font-size:28px;margin-bottom:18px}.module h2{font-size:15px}.module p{font-size:12px;color:var(--muted);line-height:1.45;margin-top:6px}.module button{margin-top:14px;padding:8px 11px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--primary);font-size:11px;font-weight:800;cursor:pointer}
     .notice{background:#fff8e7;border:1px solid #fde68a;color:#92400e;border-radius:14px;padding:12px 14px;font-size:12px;line-height:1.5;margin-bottom:18px}
-    .module-frame-view{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column}.module-frame-bar{display:none}.module-frame{width:100%;height:100%;border:0;background:#fff}
+    .module-frame-view{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;background:#0A1C38;opacity:0;pointer-events:none;transition:opacity .22s ease}.module-frame-view.visible{opacity:1;pointer-events:auto}.module-frame-bar{display:none}.module-frame{width:100%;height:100%;border:0;background:#0A1C38}
     @media(max-width:760px){.modules{grid-template-columns:repeat(2,1fr)}}@media(max-width:460px){.shell{padding:14px}.stats{grid-template-columns:1fr}.topbar{align-items:flex-start}.module{min-height:130px}}
     /* Owner Center visual theme */
     :root{--bg:#0A1C38;--card:#102d51;--text:#f5f8ff;--muted:#9eb7df;--primary:#1685ff;--border:#254b73;--danger:#ff6d86}
@@ -172,25 +172,32 @@
     const frameView = $('moduleFrameView'), frame = $('moduleFrame');
     document.querySelectorAll('.module[data-module]').forEach(card => {
       const openModule = () => {
-      const key = card.dataset.module, target = moduleMap[key];
-      if (!target) return;
-      frame.src = target;
-      frameView.classList.remove('hidden');
-      $('ownerShell').classList.add('module-open');
-      history.pushState({ ownerModule: key }, '', `#${key}`);
+        const key = card.dataset.module, target = moduleMap[key];
+        if (!target) return;
+        frame.src = target;
+        frameView.classList.remove('hidden');
+        requestAnimationFrame(() => frameView.classList.add('visible'));
+        $('ownerShell').classList.add('module-open');
+        history.pushState({ ownerModule: key }, '', `#${key}`);
       };
       card.addEventListener('click', openModule);
       card.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openModule(); } });
     });
-    window.closeModule = function(){ frame.src = 'about:blank'; frameView.classList.add('hidden'); $('ownerShell').classList.remove('module-open'); }
+    window.closeModule = function(){
+      frameView.classList.remove('visible');
+      frameView.addEventListener('transitionend', function handler(){
+        frameView.removeEventListener('transitionend', handler);
+        frameView.classList.add('hidden');
+        frame.src = 'about:blank';
+      }, { once: true });
+      $('ownerShell').classList.remove('module-open');
+    };
     // Pasang state awal agar back dari modul kembali ke dashboard, bukan keluar app
     const isFileProtocol = location.protocol === 'file:';
     if (!isFileProtocol && !location.hash) history.replaceState({ owner: true }, '', './');
     window.addEventListener('popstate', (e) => {
       if (frameView && !frameView.classList.contains('hidden')) {
-        frame.src = 'about:blank';
-        frameView.classList.add('hidden');
-        $('ownerShell').classList.remove('module-open');
+        window.closeModule();
         if (!isFileProtocol && !location.hash) history.replaceState({ owner: true }, '', './');
       }
     });
