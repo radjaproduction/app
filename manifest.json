@@ -3,7 +3,7 @@
   "short_name": "Radja Owner",
   "id": "./",
   "description": "Pusat operasional owner Radja",
-  "start_url": "./index.html",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "background_color": "#0A1C38",
