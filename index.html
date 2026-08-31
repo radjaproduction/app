@@ -24,6 +24,7 @@
     .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}.stat,.module{background:#fff;border:1px solid var(--border);border-radius:18px;padding:18px}.stat-label{font-size:11px;color:var(--muted);font-weight:800;text-transform:uppercase}.stat-value{font-size:25px;font-weight:900;margin-top:8px}.modules{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.module{min-height:145px}.module-icon{font-size:28px;margin-bottom:18px}.module h2{font-size:15px}.module p{font-size:12px;color:var(--muted);line-height:1.45;margin-top:6px}.module button{margin-top:14px;padding:8px 11px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--primary);font-size:11px;font-weight:800;cursor:pointer}
     .notice{background:#fff8e7;border:1px solid #fde68a;color:#92400e;border-radius:14px;padding:12px 14px;font-size:12px;line-height:1.5;margin-bottom:18px}
     .module-frame-view{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column}.module-frame-bar{display:none}.module-frame{width:100%;height:100%;border:0;background:#fff}
+    .update-notice{position:fixed;z-index:50;top:16px;left:50%;transform:translateX(-50%);width:min(420px,calc(100% - 28px));display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 14px;border:1px solid #3b8cff;border-radius:14px;background:#08275d;color:#dbeafe;box-shadow:0 10px 30px #0008;font-size:13px}.update-notice button{flex:0 0 auto;border:1px solid #55a6ff;border-radius:9px;padding:8px 11px;background:#1685ff;color:#fff;font-size:12px;font-weight:800;cursor:pointer}
     @media(max-width:760px){.modules{grid-template-columns:repeat(2,1fr)}}@media(max-width:460px){.shell{padding:14px}.stats{grid-template-columns:1fr}.topbar{align-items:flex-start}.module{min-height:130px}}
     /* Owner Center visual theme */
     :root{--bg:#0A1C38;--card:#102d51;--text:#f5f8ff;--muted:#9eb7df;--primary:#1685ff;--border:#254b73;--danger:#ff6d86}
@@ -43,6 +44,7 @@
 </head>
 <body>
   <div class="bg-layer" aria-hidden="true"></div>
+  <div id="updateNotice" class="update-notice hidden" role="status" aria-live="polite"><span>Versi terbaru aplikasi tersedia.</span><button id="updateReloadBtn" type="button">Perbarui</button></div>
   <style>#loginView,#appView{opacity:0;transition:opacity .25s}</style>
   <main id="loginView" class="center">
     <section class="panel">
@@ -185,8 +187,33 @@
     });
     sb.auth.onAuthStateChange((_event, session) => { if (session) showApp(session); });
 
+    let waitingWorker = null;
+    const updateNotice = $('updateNotice');
+    const showUpdateNotice = worker => {
+      waitingWorker = worker;
+      updateNotice.classList.remove('hidden');
+    };
+    $('updateReloadBtn').addEventListener('click', () => {
+      if (waitingWorker) waitingWorker.postMessage({ type: 'SKIP_WAITING' });
+    });
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(error => console.warn('PWA service worker gagal didaftarkan:', error)));
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').then(registration => {
+          if (registration.waiting) showUpdateNotice(registration.waiting);
+          registration.addEventListener('updatefound', () => {
+            const installingWorker = registration.installing;
+            if (!installingWorker) return;
+            installingWorker.addEventListener('statechange', () => {
+              if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                showUpdateNotice(installingWorker);
+              }
+            });
+          });
+        }).catch(error => console.warn('PWA service worker gagal didaftarkan:', error));
+      });
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (waitingWorker) window.location.reload();
+      });
     }
   </script>
 </body>
