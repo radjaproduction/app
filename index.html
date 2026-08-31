@@ -222,14 +222,12 @@
         moduleHistoryPushed = false;
       }
       frameView.classList.remove('visible');
-      frameView.addEventListener('transitionend', function handler(){
-        frameView.removeEventListener('transitionend', handler);
-        frameView.classList.add('hidden');
-        setTimeout(() => {
-          frame.src = 'about:blank';
-          isClosing = false; // buka kunci setelah frame benar-benar bersih
-        }, 0);
-      }, { once: true });
+      // Jangan menunggu transitionend: pada sebagian HP/WebView event ini
+      // tidak selalu terpanggil dan membuat modul terkunci setelah beberapa
+      // kali buka-tutup. Bersihkan iframe langsung agar bisa dibuka lagi.
+      frameView.classList.add('hidden');
+      frame.src = 'about:blank';
+      isClosing = false;
       $('ownerShell').classList.remove('module-open');
       const av = $('appView');
       av.classList.remove('hidden');
