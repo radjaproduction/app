@@ -119,6 +119,14 @@
       views.app.style.opacity='0';
       const lv=views.login; lv.classList.remove('hidden'); lv.style.opacity='0';
       requestAnimationFrame(()=>{ lv.style.opacity='1'; });
+      // Reset PIN state agar numpad tidak lag/stuck dari sesi sebelumnya
+      pinValue = '';
+      loginPending = false;
+      updateDots();
+      setLoginBusy(false);
+      const err=$('loginError');
+      err.textContent='';
+      err.className='error hidden';
     };
     async function loadSummary(){
       try {
@@ -211,13 +219,15 @@
       frameView.addEventListener('transitionend', function handler(){
         frameView.removeEventListener('transitionend', handler);
         frameView.classList.add('hidden');
-        frame.src = 'about:blank';
+        // Delay reset src agar tidak blok main thread saat animasi selesai
+        setTimeout(() => { frame.src = 'about:blank'; }, 0);
       }, { once: true });
       $('ownerShell').classList.remove('module-open');
-      // Pastikan appView tetap terlihat setelah modul ditutup
+      // Pastikan appView aktif dan loginView tersembunyi
       const av = $('appView');
       av.classList.remove('hidden');
       av.style.opacity = '1';
+      views.login.classList.add('hidden'); // pastikan loginView tidak ikut muncul
       moduleExitFab.style.left = '';
       moduleExitFab.style.top = '';
       moduleExitFab.style.right = '';
