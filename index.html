@@ -193,25 +193,26 @@
     const moduleNames = { payroll:'Payroll', pegawai:'Pegawai', inventory:'Inventory', pesanan:'Pesanan' };
     const frameView = $('moduleFrameView'), frame = $('moduleFrame'), moduleExitFab = $('moduleExitFab');
     let activeModuleKey = null;
+    let isClosing = false; // flag: animasi close sedang berlangsung
     document.querySelectorAll('.module[data-module]').forEach(card => {
       const openModule = () => {
         const key = card.dataset.module, target = moduleMap[key];
-        if (!target || activeModuleKey) return;
+        // Blok jika modul sudah aktif ATAU sedang dalam animasi close (race condition)
+        if (!target || activeModuleKey || isClosing) return;
         frame.src = target;
         frameView.classList.remove('hidden');
         requestAnimationFrame(() => frameView.classList.add('visible'));
         $('ownerShell').classList.add('module-open');
         activeModuleKey = key;
-        // Satu state saja untuk modul. Back HP pertama langsung mengembalikan
-        // dashboard Owner tanpa melewati history tambahan.
         history.pushState({ ownerModule: key }, '', `#${key}`);
       };
       card.addEventListener('click', openModule);
       card.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openModule(); } });
     });
     window.closeModule = function(){
-      if (!activeModuleKey) return;
+      if (!activeModuleKey || isClosing) return;
       activeModuleKey = null;
+      isClosing = true; // kunci selama animasi close berlangsung
       if (!isFileProtocol && location.hash) {
         history.replaceState({ owner: true }, '', location.pathname + location.search);
       }
@@ -219,15 +220,16 @@
       frameView.addEventListener('transitionend', function handler(){
         frameView.removeEventListener('transitionend', handler);
         frameView.classList.add('hidden');
-        // Delay reset src agar tidak blok main thread saat animasi selesai
-        setTimeout(() => { frame.src = 'about:blank'; }, 0);
+        setTimeout(() => {
+          frame.src = 'about:blank';
+          isClosing = false; // buka kunci setelah frame benar-benar bersih
+        }, 0);
       }, { once: true });
       $('ownerShell').classList.remove('module-open');
-      // Pastikan appView aktif dan loginView tersembunyi
       const av = $('appView');
       av.classList.remove('hidden');
       av.style.opacity = '1';
-      views.login.classList.add('hidden'); // pastikan loginView tidak ikut muncul
+      views.login.classList.add('hidden');
       moduleExitFab.style.left = '';
       moduleExitFab.style.top = '';
       moduleExitFab.style.right = '';
