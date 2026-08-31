@@ -95,7 +95,6 @@
     </div>
     <section id="moduleFrameView" class="module-frame-view hidden" aria-label="Modul aplikasi">
 
-      <button id="closeModuleBtn" onclick="closeModule()" style="position:fixed;top:14px;right:14px;z-index:30;border:0;border-radius:50%;width:40px;height:40px;font-size:22px;background:#0a1c38cc;color:#fff;cursor:pointer;backdrop-filter:blur(8px);border:1px solid #254b73">✕</button>
       <iframe id="moduleFrame" class="module-frame" title="Modul aplikasi"></iframe>
     </section>
   </main>
@@ -184,7 +183,17 @@
       card.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openModule(); } });
     });
     window.closeModule = function(){ frame.src = 'about:blank'; frameView.classList.add('hidden'); $('ownerShell').classList.remove('module-open'); }
-    window.addEventListener('popstate', () => { if (frameView && !frameView.classList.contains('hidden')) { frame.src='about:blank'; frameView.classList.add('hidden'); $('ownerShell').classList.remove('module-open'); } });
+    // Pasang state awal agar back dari modul kembali ke dashboard, bukan keluar app
+    const isFileProtocol = location.protocol === 'file:';
+    if (!isFileProtocol && !location.hash) history.replaceState({ owner: true }, '', './');
+    window.addEventListener('popstate', (e) => {
+      if (frameView && !frameView.classList.contains('hidden')) {
+        frame.src = 'about:blank';
+        frameView.classList.add('hidden');
+        $('ownerShell').classList.remove('module-open');
+        if (!isFileProtocol && !location.hash) history.replaceState({ owner: true }, '', './');
+      }
+    });
     // Tampilkan login dulu langsung, jangan tunggu network
     views.login.classList.remove('hidden');
     requestAnimationFrame(()=>{ views.login.style.opacity='1'; });
