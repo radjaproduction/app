@@ -1,4 +1,4 @@
-const CACHE_NAME = 'radja-owner-v7';
+const CACHE_NAME = 'radja-owner-v8';
 const APP_SHELL = [
   './',
   './index.html',
