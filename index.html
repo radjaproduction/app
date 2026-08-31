@@ -19,7 +19,7 @@
     .panel{width:min(100%,430px);background:var(--card);border:1px solid var(--border);border-radius:24px;padding:28px;box-shadow:0 12px 40px #1a56db18}
     .brand{display:flex;align-items:center;gap:12px;margin-bottom:24px}.brand-icon{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#1a2a8c,#3b7bf8);color:#fff;font-weight:900}
     h1,h2,p{margin:0}.brand h1{font-size:20px}.brand p{font-size:12px;color:var(--muted);margin-top:3px}.field{margin:14px 0}.field label{display:block;font-size:12px;font-weight:800;margin-bottom:7px}.field input{width:100%;padding:13px 14px;border:1px solid var(--border);border-radius:12px;outline:none}.field input:focus{border-color:var(--primary)}
-    .btn{width:100%;padding:13px;border:0;border-radius:12px;background:linear-gradient(135deg,#1a56db,#4b8ef8);color:#fff;font-weight:800;cursor:pointer}.error{color:var(--danger);font-size:12px;font-weight:700;margin:12px 0;line-height:1.45}
+    .btn{width:100%;padding:13px;border:0;border-radius:12px;background:linear-gradient(135deg,#1a56db,#4b8ef8);color:#fff;font-weight:800;cursor:pointer}.error,.login-status{font-size:12px;font-weight:700;margin:12px 0;line-height:1.45}.error{color:var(--danger)}.login-status{color:#8eadd2;text-align:center}
     .shell{width:min(1120px,100%);margin:auto;padding:20px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px}.topbar .btn{width:auto;padding:10px 14px;background:#fff;color:var(--danger);border:1px solid #fecaca}.welcome{color:var(--muted);font-size:13px;margin-top:4px}
     .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}.stat,.module{background:#fff;border:1px solid var(--border);border-radius:18px;padding:18px}.stat-label{font-size:11px;color:var(--muted);font-weight:800;text-transform:uppercase}.stat-value{font-size:25px;font-weight:900;margin-top:8px}.modules{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.module{min-height:145px}.module-icon{font-size:28px;margin-bottom:18px}.module h2{font-size:15px}.module p{font-size:12px;color:var(--muted);line-height:1.45;margin-top:6px}.module button{margin-top:14px;padding:8px 11px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--primary);font-size:11px;font-weight:800;cursor:pointer}
     .notice{background:#fff8e7;border:1px solid #fde68a;color:#92400e;border-radius:14px;padding:12px 14px;font-size:12px;line-height:1.5;margin-bottom:18px}
@@ -36,7 +36,7 @@
     @media(max-width:460px){.shell{padding:16px 12px 108px}.topbar h1{font-size:19px}.topbar>div:first-child:before{width:47px;height:47px;font-size:33px}.topbar .btn{padding:9px 11px}.stats{gap:8px}.stat{padding:15px 10px 22px;min-height:142px}.stat-value{font-size:25px;margin-top:22px}.module{min-height:240px;padding:18px 15px}.module h2{font-size:17px}.module p{font-size:12px}}
     #loginView{background:transparent;position:relative;z-index:1}#loginView .panel{background:linear-gradient(145deg,#102d51,#0c2647);border:1px solid #2a527b;box-shadow:0 18px 50px #03132699;color:var(--text);width:min(100%,360px)}#loginView .brand{align-items:center}.brand-icon{background:#0A1C38 url('icon-192.png') center/cover no-repeat!important;color:transparent!important;border:1px solid #315a80;box-shadow:0 0 20px #1b6fc966}.brand h1{font-size:21px}.brand p{color:#8eadd2}
     .pin-dots{display:flex;justify-content:center;gap:12px;margin:24px 0 20px}.pin-dot{width:16px;height:16px;border-radius:50%;border:2px solid #315a80;background:transparent;transition:background .15s,border-color .15s}.pin-dot.filled{background:#1685ff;border-color:#1685ff}
-    .numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}.numpad-btn{border:1px solid #254b73;border-radius:14px;background:linear-gradient(145deg,#0e2c56,#0a2040);color:#fff;font-size:22px;font-weight:700;padding:18px 0;cursor:pointer;transition:background .12s,transform .1s;user-select:none}.numpad-btn:active{background:linear-gradient(145deg,#1a4a8a,#133570);transform:scale(.94)}.numpad-btn.del{font-size:18px;color:#82a9d2}.numpad-btn.ok{background:linear-gradient(145deg,#0e4fd6,#0938a8);border-color:#1685ff;box-shadow:0 4px 14px #1685ff44}.numpad-btn.ok:active{background:linear-gradient(145deg,#1a5fe6,#0e44be)}
+    .numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}.numpad-btn{border:1px solid #254b73;border-radius:14px;background:linear-gradient(145deg,#0e2c56,#0a2040);color:#fff;font-size:22px;font-weight:700;padding:18px 0;cursor:pointer;transition:background .12s,transform .1s,opacity .12s;user-select:none}.numpad-btn:active{background:linear-gradient(145deg,#1a4a8a,#133570);transform:scale(.94)}.numpad-btn:disabled{opacity:.45;cursor:wait}.numpad-btn.del{font-size:18px;color:#82a9d2}.numpad-btn.ok{background:linear-gradient(145deg,#0e4fd6,#0938a8);border-color:#1685ff;box-shadow:0 4px 14px #1685ff44}.numpad-btn.ok:active{background:linear-gradient(145deg,#1a5fe6,#0e44be)}
     #loginError{text-align:center;margin-bottom:8px}
     #updateBanner{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:50;display:flex;align-items:center;gap:12px;background:#0e3a7a;border:1px solid #1685ff;border-radius:16px;padding:12px 16px;box-shadow:0 8px 28px #0008;backdrop-filter:blur(12px);color:#c4d9fa;font-size:13px;white-space:nowrap}
     #updateBanner button{border:0;border-radius:10px;background:#1685ff;color:#fff;font-weight:800;font-size:12px;padding:8px 14px;cursor:pointer}
@@ -140,6 +140,8 @@
     const OWNER_EMAIL = 'admin@radja.com';
     let pinValue = '';
     const MAX_PIN = 4;
+    let loginPending = false;
+    const setLoginBusy = busy => document.querySelectorAll('.numpad-btn').forEach(button => { button.disabled = busy; });
     function updateDots(){
       for(let i=0;i<MAX_PIN;i++){
         const d=$('d'+i);
@@ -151,9 +153,21 @@
       let count=0;const iv=setInterval(()=>{dots.style.transform=count%2?'translateX(6px)':'translateX(-6px)';if(++count>5){clearInterval(iv);dots.style.transform='';pinValue='';updateDots();}},60);
     }
     async function tryLogin(){
-      const err=$('loginError'); err.classList.add('hidden');
+      if (loginPending || !pinValue) return;
+      loginPending = true;
+      setLoginBusy(true);
+      const err=$('loginError');
+      err.className='login-status';
+      err.textContent='Memeriksa password…';
       const {data,error}=await sb.auth.signInWithPassword({email:OWNER_EMAIL,password:pinValue});
-      if(error){ err.textContent='Password salah'; err.classList.remove('hidden'); pinShake(); return; }
+      if(error){
+        loginPending = false;
+        setLoginBusy(false);
+        err.className='error';
+        err.textContent='Password salah';
+        pinShake();
+        return;
+      }
       showApp(data.session);
     }
     document.querySelectorAll('.numpad-btn[data-n]').forEach(btn=>{
