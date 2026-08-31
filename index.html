@@ -161,16 +161,14 @@
     $('logoutBtn').addEventListener('click', async () => { await sb.auth.signOut(); showLogin(); });
     const moduleMap = { payroll:'https://radjaproduction.github.io/payroll/', pegawai:'https://radjaproduction.github.io/pegawai/', inventory:'https://radjaproduction.github.io/inventory/', pesanan:'https://radjaproduction.github.io/Pesanan/#home' };
     const moduleNames = { payroll:'Payroll', pegawai:'Pegawai', inventory:'Inventory', pesanan:'Pesanan' };
-    const frameView = $('moduleFrameView'), frame = $('moduleFrame'), frameTitle = $('moduleFrameTitle');
+    const frameView = $('moduleFrameView'), frame = $('moduleFrame');
     document.querySelectorAll('.module[data-module]').forEach(card => {
       const openModule = () => {
       const key = card.dataset.module, target = moduleMap[key];
       if (!target) return;
-      frameTitle.textContent = moduleNames[key] || 'Modul';
-      frame.src = target;
-      frameView.classList.remove('hidden');
-      $('ownerShell').classList.add('module-open');
-      history.pushState({ ownerModule: key }, '', `#${key}`);
+      // Sub aplikasi berada di domain GitHub Pages yang berbeda dari owner.
+      // Buka sebagai halaman penuh agar tidak diblokir oleh kebijakan iframe.
+      window.location.href = target;
       };
       card.addEventListener('click', openModule);
       card.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openModule(); } });
