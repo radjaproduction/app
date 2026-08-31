@@ -191,14 +191,21 @@
         frame.src = 'about:blank';
       }, { once: true });
       $('ownerShell').classList.remove('module-open');
+      // Pastikan appView tetap terlihat setelah modul ditutup
+      const av = $('appView');
+      av.classList.remove('hidden');
+      av.style.opacity = '1';
     };
     // Pasang state awal agar back dari modul kembali ke dashboard, bukan keluar app
     const isFileProtocol = location.protocol === 'file:';
-    if (!isFileProtocol && !location.hash) history.replaceState({ owner: true }, '', './');
+    if (!isFileProtocol) history.replaceState({ owner: true }, '', location.pathname);
     window.addEventListener('popstate', (e) => {
       if (frameView && !frameView.classList.contains('hidden')) {
         window.closeModule();
-        if (!isFileProtocol && !location.hash) history.replaceState({ owner: true }, '', './');
+        // Jangan replaceState di sini — biarkan browser handle penghapusan hash
+      } else {
+        // Sudah di dashboard, cegah keluar app dengan push state baru
+        if (!isFileProtocol) history.pushState({ owner: true }, '', location.pathname);
       }
     });
     // Tampilkan login dulu langsung, jangan tunggu network
