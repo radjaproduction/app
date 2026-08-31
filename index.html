@@ -190,6 +190,9 @@
     window.closeModule = function(){
       if (!activeModuleKey) return;
       activeModuleKey = null;
+      if (!isFileProtocol && location.hash) {
+        history.replaceState({ owner: true }, '', location.pathname + location.search);
+      }
       frameView.classList.remove('visible');
       frameView.addEventListener('transitionend', function handler(){
         frameView.removeEventListener('transitionend', handler);
@@ -212,6 +215,11 @@
         // Sudah di dashboard, cegah keluar app dengan push state baru
         if (!isFileProtocol) history.pushState({ owner: true }, '', location.pathname);
       }
+    });
+    // Fallback untuk Android/WebView yang mengirim perubahan hash tanpa
+    // memicu popstate saat tombol Back HP ditekan.
+    window.addEventListener('hashchange', () => {
+      if (activeModuleKey && !location.hash) window.closeModule();
     });
     // Tampilkan login dulu langsung, jangan tunggu network
     views.login.classList.remove('hidden');
