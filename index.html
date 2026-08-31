@@ -23,7 +23,7 @@
     .shell{width:min(1120px,100%);margin:auto;padding:20px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px}.topbar .btn{width:auto;padding:10px 14px;background:#fff;color:var(--danger);border:1px solid #fecaca}.welcome{color:var(--muted);font-size:13px;margin-top:4px}
     .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}.stat,.module{background:#fff;border:1px solid var(--border);border-radius:18px;padding:18px}.stat-label{font-size:11px;color:var(--muted);font-weight:800;text-transform:uppercase}.stat-value{font-size:25px;font-weight:900;margin-top:8px}.modules{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.module{min-height:145px}.module-icon{font-size:28px;margin-bottom:18px}.module h2{font-size:15px}.module p{font-size:12px;color:var(--muted);line-height:1.45;margin-top:6px}.module button{margin-top:14px;padding:8px 11px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--primary);font-size:11px;font-weight:800;cursor:pointer}
     .notice{background:#fff8e7;border:1px solid #fde68a;color:#92400e;border-radius:14px;padding:12px 14px;font-size:12px;line-height:1.5;margin-bottom:18px}
-    .module-frame-view{position:fixed;inset:0;background:var(--bg);z-index:20;display:flex;flex-direction:column}.module-frame-bar{height:58px;display:flex;align-items:center;gap:12px;padding:10px 14px;background:#fff;border-bottom:1px solid var(--border);box-shadow:0 2px 10px #1a234012}.module-frame-bar button{border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--primary);font-weight:800;padding:8px 12px;cursor:pointer}.module-frame-title{font-weight:900;font-size:15px}.module-frame{width:100%;flex:1;border:0;background:#fff}
+    .module-frame-view{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column}.module-frame-bar{position:absolute;top:12px;right:12px;z-index:21;pointer-events:none}.module-frame-bar button{pointer-events:all;border:0;border-radius:20px;background:#0b2342ee;color:#fff;font-weight:800;font-size:13px;padding:9px 16px;cursor:pointer;box-shadow:0 4px 16px #00000066;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}.module-frame-bar button:active{background:#1685ff}.module-frame-title{display:none}.module-frame{width:100%;height:100%;border:0;background:#fff}
     @media(max-width:760px){.modules{grid-template-columns:repeat(2,1fr)}}@media(max-width:460px){.shell{padding:14px}.stats{grid-template-columns:1fr}.topbar{align-items:flex-start}.module{min-height:130px}}
     /* Owner Center visual theme */
     :root{--bg:#0b2342;--card:#102d51;--text:#f5f8ff;--muted:#9eb7df;--primary:#1685ff;--border:#254b73;--danger:#ff6d86}
@@ -86,7 +86,7 @@
       <section class="security-card"><div class="security-icon">🛡</div><div><strong>Sistem aman &amp; terpusat</strong><p>Data Anda tersimpan aman dan selalu terintegrasi.</p></div></section>
     </div>
     <section id="moduleFrameView" class="module-frame-view hidden" aria-label="Modul aplikasi">
-      <div class="module-frame-bar"><button id="moduleBackBtn" type="button">← Kembali</button><div id="moduleFrameTitle" class="module-frame-title">Modul</div></div>
+      <div class="module-frame-bar"><button id="moduleBackBtn" type="button">✕</button><div id="moduleFrameTitle" class="module-frame-title"></div></div>
       <iframe id="moduleFrame" class="module-frame" title="Modul aplikasi"></iframe>
     </section>
   </main>
