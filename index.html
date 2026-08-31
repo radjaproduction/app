@@ -190,10 +190,11 @@
     $('pinOk').addEventListener('click', ()=>{ if(pinValue.length>0) tryLogin(); });
     $('logoutBtn').addEventListener('click', async () => { await sb.auth.signOut(); showLogin(); });
     const moduleMap = { payroll:'https://radjaproduction.github.io/payroll/', pegawai:'https://radjaproduction.github.io/pegawai/', inventory:'https://radjaproduction.github.io/inventory/', pesanan:'https://radjaproduction.github.io/Pesanan/#home' };
-    const moduleNames = { payroll:'Payroll', pegawai:'Pegawai', inventory:'Inventory', pesanan:'Pesanan' };
     const frameView = $('moduleFrameView'), frame = $('moduleFrame'), moduleExitFab = $('moduleExitFab');
     let activeModuleKey = null;
     let isClosing = false; // flag: animasi close sedang berlangsung
+    const isFileProtocol = location.protocol === 'file:';
+    let moduleHistoryPushed = false;
     document.querySelectorAll('.module[data-module]').forEach(card => {
       const openModule = () => {
         const key = card.dataset.module, target = moduleMap[key];
@@ -204,7 +205,10 @@
         requestAnimationFrame(() => frameView.classList.add('visible'));
         $('ownerShell').classList.add('module-open');
         activeModuleKey = key;
-        history.pushState({ ownerModule: key }, '', `#${key}`);
+        if (!isFileProtocol) {
+          history.pushState({ ownerModule: key }, '', `${location.pathname}${location.search}#${key}`);
+          moduleHistoryPushed = true;
+        }
       };
       card.addEventListener('click', openModule);
       card.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openModule(); } });
@@ -213,8 +217,9 @@
       if (!activeModuleKey || isClosing) return;
       activeModuleKey = null;
       isClosing = true; // kunci selama animasi close berlangsung
-      if (!isFileProtocol && location.hash) {
+      if (!isFileProtocol && moduleHistoryPushed) {
         history.replaceState({ owner: true }, '', location.pathname + location.search);
+        moduleHistoryPushed = false;
       }
       frameView.classList.remove('visible');
       frameView.addEventListener('transitionend', function handler(){
@@ -265,15 +270,11 @@
     });
     moduleExitFab.addEventListener('pointercancel', () => { dragState = null; moduleExitFab.classList.remove('dragging'); });
     moduleExitFab.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); window.closeModule(); } });
-    // Pasang state awal agar back dari modul kembali ke dashboard, bukan keluar app
-    const isFileProtocol = location.protocol === 'file:';
+    // Pasang state awal Owner sebagai dasar navigasi modul.
     if (!isFileProtocol) history.replaceState({ owner: true }, '', location.pathname);
     window.addEventListener('popstate', (e) => {
       if (activeModuleKey) {
         window.closeModule();
-      } else {
-        // Sudah di dashboard, cegah keluar app dengan push state baru
-        if (!isFileProtocol) history.pushState({ owner: true }, '', location.pathname);
       }
     });
     // Fallback untuk Android/WebView yang mengirim perubahan hash tanpa
