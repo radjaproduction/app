@@ -131,18 +131,21 @@
     async function loadSummary(){
       try {
         const [input, master] = await Promise.all([
-          sb.from('payroll_input').select('data'),
-          sb.from('payroll_master').select('data')
+          sb.from('payroll_input').select('*'),
+          sb.from('payroll_master').select('*')
         ]);
         if (input.error) throw input.error; if (master.error) throw master.error;
         const rows = input.data || [], masters = master.data || [];
         const today = new Date(), start = new Date(today); start.setDate(today.getDate() - today.getDay());
         const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
         const from = iso(start), toDate = new Date(start); toDate.setDate(start.getDate()+6); const to = iso(toDate);
-        const active = rows.filter(r => { const d=r.data||{}; return d.tanggalISO >= from && d.tanggalISO <= to; });
+        // payroll_input menyimpan tanggalISO & jumlah sebagai kolom flat (bukan nested di dalam .data)
+        const active = rows.filter(r => r.tanggalISO >= from && r.tanggalISO <= to);
         $('inputCount').textContent = active.length;
-        $('employeeCount').textContent = masters.filter(r => (r.data||{}).type === 'pegawai').length;
-        $('payrollTotal').textContent = 'Rp ' + fmt(active.reduce((s,r)=>s+Number((r.data||{}).jumlah||0),0));
+        // payroll_master: coba flat dulu, fallback ke nested .data jika perlu
+        const pegawaiCount = masters.filter(r => r.type === 'pegawai' || (r.data||{}).type === 'pegawai').length;
+        $('employeeCount').textContent = pegawaiCount;
+        $('payrollTotal').textContent = 'Rp ' + fmt(active.reduce((s,r)=>s+Number(r.jumlah||0),0));
       } catch (e) { $('inputCount').textContent='—'; $('employeeCount').textContent='—'; $('payrollTotal').textContent='—'; console.error(e); }
     }
     const OWNER_EMAIL = 'admin@radja.com';
