@@ -83,7 +83,7 @@
   <main id="appView" class="hidden">
     <div id="ownerShell" class="shell">
       <header class="topbar"><div><div><h1>Radja Owner Center</h1><p id="ownerEmail" class="welcome"></p></div></div><button id="logoutBtn" class="btn">Keluar&nbsp; ⇥</button></header>
-      <section class="stats"><div class="stat"><div class="stat-label">INPUT PEKERJAAN</div><div id="inputCount" class="stat-value">—</div></div><div class="stat"><div class="stat-label">PEGAWAI</div><div id="employeeCount" class="stat-value">—</div></div><div class="stat"><div class="stat-label">PAYROLL PERIODE AKTIF</div><div id="payrollTotal" class="stat-value">—</div></div></section>
+      <section class="stats"><div class="stat"><div class="stat-label">INPUT MINGGU INI</div><div id="inputCount" class="stat-value">—</div></div><div class="stat"><div class="stat-label">PEGAWAI</div><div id="employeeCount" class="stat-value">—</div></div><div class="stat"><div class="stat-label">PAYROLL MINGGU INI</div><div id="payrollTotal" class="stat-value">—</div></div></section>
       <h2 style="font-size:16px;margin:0 0 12px">Modul operasional</h2>
       <section class="modules">
         <article class="module" data-module="inventory" role="button" tabindex="0"><div class="module-icon">📦</div><h2>Inventory</h2><p>Stok, barang masuk, dan barang keluar.</p></article>
@@ -136,31 +136,56 @@
       if (typeof row.data === 'string') { try { return JSON.parse(row.data) || {}; } catch (e) {} }
       return row;
     };
+    const rowDateOnly = row => {
+      const raw = String(row?.tanggalISO || row?.tanggal || row?.created_at || '').trim();
+      if (!raw) return '';
+      if (/^\d{4}-\d{2}-\d{2}/.test(raw)) return raw.slice(0,10);
+      const dmy = raw.match(/^(\d{1,2})[\\/-](\d{1,2})[\\/-](\d{4})/);
+      if (dmy) return `${dmy[3]}-${String(dmy[2]).padStart(2,'0')}-${String(dmy[1]).padStart(2,'0')}`;
+      const parsed = new Date(raw);
+      if (Number.isNaN(parsed.getTime())) return '';
+      return `${parsed.getFullYear()}-${String(parsed.getMonth()+1).padStart(2,'0')}-${String(parsed.getDate()).padStart(2,'0')}`;
+    };
+    async function fetchAllRows(table){
+      const all=[];
+      const pageSize=1000;
+      for(let offset=0;;offset+=pageSize){
+        const {data,error}=await sb.from(table).select('id,data').order('id',{ascending:true}).range(offset,offset+pageSize-1);
+        if(error) throw error;
+        all.push(...(data||[]));
+        if(!data || data.length<pageSize) return all;
+      }
+    }
     async function loadSummary(){
-      const [input, master] = await Promise.all([
-        sb.from('payroll_input').select('id,data'),
-        sb.from('payroll_master').select('id,data')
-      ]);
-      if (input.error || master.error) {
-        console.error('loadSummary error:', input.error || master.error);
+      let inputRows, masterRows, tambahanRows;
+      try {
+        [inputRows, masterRows, tambahanRows] = await Promise.all([
+          fetchAllRows('payroll_input'), fetchAllRows('payroll_master'), fetchAllRows('tambahan')
+        ]);
+      } catch(e) {
+        console.error('loadSummary error:', e);
         return;
       }
-      const tambahanRes = await sb.from('tambahan').select('id,data');
-      if (tambahanRes.error) console.warn('loadSummary tambahan:', tambahanRes.error);
-      const rows = (input.data || []).map(rowData), masters = (master.data || []).map(rowData);
-      const tambahan = (tambahanRes.data || []).map(rowData);
-      const today = new Date(), start = new Date(today); start.setDate(today.getDate() - today.getDay());
+      const rows = inputRows.map(rowData), masters = masterRows.map(rowData);
+      const tambahan = tambahanRows.map(rowData);
+      // Gunakan tanggal WIB secara eksplisit agar periode tidak bergeser bila perangkat
+      ///browser memakai timezone berbeda dari aplikasi Payroll.
+      const jakartaParts = new Intl.DateTimeFormat('en-CA', { timeZone:'Asia/Jakarta', year:'numeric', month:'2-digit', day:'2-digit' }).formatToParts(new Date());
+      const jakartaToday = Object.fromEntries(jakartaParts.filter(p=>p.type!=='literal').map(p=>[p.type,p.value]));
+      const today = new Date(`${jakartaToday.year}-${jakartaToday.month}-${jakartaToday.day}T12:00:00+07:00`);
+      const start = new Date(today); start.setDate(today.getDate() - today.getDay());
       const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
       const from = iso(start), toDate = new Date(start); toDate.setDate(start.getDate()+6); const to = iso(toDate);
-      const active = rows.filter(r => { const tgl = String(r.tanggalISO || '').slice(0,10); return tgl >= from && tgl <= to; });
-      const activeTambahan = tambahan.filter(r => {
-        const tgl = String(r.tanggalISO || '').slice(0,10);
-        return tgl >= from && tgl <= to;
-      });
+      // Periode aktif dashboard: Minggu sampai Sabtu, sama seperti periode Payroll.
+      const active = rows.filter(r => { const tgl = rowDateOnly(r); return tgl >= from && tgl <= to; });
+      const activeTambahan = tambahan.filter(r => { const tgl = rowDateOnly(r); return tgl >= from && tgl <= to; });
       $('inputCount').textContent = active.length;
       $('employeeCount').textContent = masters.filter(r => r.type === 'pegawai').length;
       const totalInput = active.reduce((s,r)=>s+Number(r.jumlah||0),0);
-      const totalTambahan = activeTambahan.reduce((s,r)=>s+Number(r.total||0),0);
+      const totalTambahan = activeTambahan.reduce((s,r)=>{
+        if(Number(r.total||0)>0) return s+Number(r.total);
+        try { return s+Object.values(JSON.parse(r.itemsJSON||'{}')).reduce((x,it)=>x+Number(it.jumlah||0),0); } catch(e) { return s; }
+      },0);
       $('payrollTotal').textContent = 'Rp ' + fmt(totalInput + totalTambahan);
     }
     let summaryRefreshTimer = null;
