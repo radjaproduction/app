@@ -139,14 +139,13 @@
         const today = new Date(), start = new Date(today); start.setDate(today.getDate() - today.getDay());
         const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
         const from = iso(start), toDate = new Date(start); toDate.setDate(start.getDate()+6); const to = iso(toDate);
-        // payroll_input menyimpan tanggalISO & jumlah sebagai kolom flat (bukan nested di dalam .data)
-        const active = rows.filter(r => r.tanggalISO >= from && r.tanggalISO <= to);
+        // payroll_input & payroll_master menyimpan semua field di dalam kolom data (JSONB)
+        const active = rows.filter(r => { const tgl = r.data?.tanggalISO ?? ''; return tgl >= from && tgl <= to; });
         $('inputCount').textContent = active.length;
-        // payroll_master: coba flat dulu, fallback ke nested .data jika perlu
-        const pegawaiCount = masters.filter(r => r.type === 'pegawai' || (r.data||{}).type === 'pegawai').length;
+        const pegawaiCount = masters.filter(r => r.data?.type === 'pegawai').length;
         $('employeeCount').textContent = pegawaiCount;
-        $('payrollTotal').textContent = 'Rp ' + fmt(active.reduce((s,r)=>s+Number(r.jumlah||0),0));
-      } catch (e) { $('inputCount').textContent='—'; $('employeeCount').textContent='—'; $('payrollTotal').textContent='—'; console.error(e); }
+        $('payrollTotal').textContent = 'Rp ' + fmt(active.reduce((s,r)=>s+Number(r.data?.jumlah||0),0));
+      } catch (e) { $('inputCount').textContent='—'; $('employeeCount').textContent='—'; $('payrollTotal').textContent='—'; console.error('loadSummary error:', e); }
     }
     const OWNER_EMAIL = 'admin@radja.com';
     let pinValue = '';
