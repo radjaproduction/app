@@ -113,6 +113,8 @@
       const av=views.app; av.classList.remove('hidden'); av.style.opacity='0';
       requestAnimationFrame(()=>{ av.style.opacity='1'; });
       $('ownerEmail').textContent = session?.user?.email || ''; loadSummary();
+      startSummaryRefresh();
+      startSummaryRealtime();
     };
     const showLogin = () => {
       views.app.classList.add('hidden');
@@ -128,25 +130,58 @@
       err.textContent='';
       err.className='error hidden';
     };
+    const rowData = row => {
+      if (!row) return {};
+      if (row.data && typeof row.data === 'object') return row.data;
+      if (typeof row.data === 'string') { try { return JSON.parse(row.data) || {}; } catch (e) {} }
+      return row;
+    };
     async function loadSummary(){
-      try {
-        const [input, master] = await Promise.all([
-          sb.from('payroll_input').select('*'),
-          sb.from('payroll_master').select('*')
-        ]);
-        if (input.error) throw input.error; if (master.error) throw master.error;
-        const rows = input.data || [], masters = master.data || [];
-        const today = new Date(), start = new Date(today); start.setDate(today.getDate() - today.getDay());
-        const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-        const from = iso(start), toDate = new Date(start); toDate.setDate(start.getDate()+6); const to = iso(toDate);
-        // payroll_input & payroll_master menyimpan semua field di dalam kolom data (JSONB)
-        const active = rows.filter(r => { const tgl = r.data?.tanggalISO ?? ''; return tgl >= from && tgl <= to; });
-        $('inputCount').textContent = active.length;
-        const pegawaiCount = masters.filter(r => r.data?.type === 'pegawai').length;
-        $('employeeCount').textContent = pegawaiCount;
-        $('payrollTotal').textContent = 'Rp ' + fmt(active.reduce((s,r)=>s+Number(r.data?.jumlah||0),0));
-      } catch (e) { $('inputCount').textContent='—'; $('employeeCount').textContent='—'; $('payrollTotal').textContent='—'; console.error('loadSummary error:', e); }
+      const [input, master] = await Promise.all([
+        sb.from('payroll_input').select('id,data'),
+        sb.from('payroll_master').select('id,data')
+      ]);
+      if (input.error || master.error) {
+        console.error('loadSummary error:', input.error || master.error);
+        return;
+      }
+      const tambahanRes = await sb.from('tambahan').select('id,data');
+      if (tambahanRes.error) console.warn('loadSummary tambahan:', tambahanRes.error);
+      const rows = (input.data || []).map(rowData), masters = (master.data || []).map(rowData);
+      const tambahan = (tambahanRes.data || []).map(rowData);
+      const today = new Date(), start = new Date(today); start.setDate(today.getDate() - today.getDay());
+      const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+      const from = iso(start), toDate = new Date(start); toDate.setDate(start.getDate()+6); const to = iso(toDate);
+      const active = rows.filter(r => { const tgl = String(r.tanggalISO || '').slice(0,10); return tgl >= from && tgl <= to; });
+      const activeTambahan = tambahan.filter(r => {
+        const tgl = String(r.tanggalISO || '').slice(0,10);
+        return tgl >= from && tgl <= to;
+      });
+      $('inputCount').textContent = active.length;
+      $('employeeCount').textContent = masters.filter(r => r.type === 'pegawai').length;
+      const totalInput = active.reduce((s,r)=>s+Number(r.jumlah||0),0);
+      const totalTambahan = activeTambahan.reduce((s,r)=>s+Number(r.total||0),0);
+      $('payrollTotal').textContent = 'Rp ' + fmt(totalInput + totalTambahan);
     }
+    let summaryRefreshTimer = null;
+    function startSummaryRefresh(){
+      if(summaryRefreshTimer) return;
+      summaryRefreshTimer = setInterval(() => {
+        if(!document.hidden && !views.app.classList.contains('hidden')) loadSummary();
+      }, 30000);
+    }
+    let summaryRealtime = null;
+    function startSummaryRealtime(){
+      if(summaryRealtime) return;
+      summaryRealtime = sb.channel('owner-summary')
+        .on('postgres_changes', { event:'*', schema:'public', table:'payroll_input' }, loadSummary)
+        .on('postgres_changes', { event:'*', schema:'public', table:'payroll_master' }, loadSummary)
+        .on('postgres_changes', { event:'*', schema:'public', table:'tambahan' }, loadSummary)
+        .subscribe();
+    }
+    document.addEventListener('visibilitychange', () => {
+      if(!document.hidden && !views.app.classList.contains('hidden')) loadSummary();
+    });
     const OWNER_EMAIL = 'admin@radja.com';
     let pinValue = '';
     const MAX_PIN = 4;
