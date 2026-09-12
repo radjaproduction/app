@@ -95,6 +95,7 @@
         <article class="module" data-module="payroll" role="button" tabindex="0"><div class="module-icon">💰</div><h2>Payroll</h2><p>Rekap gaji, pinjaman, tambahan, dan slip.</p></article>
         <article class="module" data-module="pesanan" role="button" tabindex="0"><div class="module-icon">🧾</div><h2>Pesanan</h2><p>Pesanan dan status proses produksi.</p></article>
         <article class="module" data-module="pegawai" role="button" tabindex="0"><div class="module-icon">👥</div><h2>Pegawai</h2><p>Master pegawai dan pemantauan input kerja.</p></article>
+        <article class="module" data-module="produksi" role="button" tabindex="0"><div class="module-icon">⚙</div><h2>Produksi</h2><p>Aktivitas produksi, Packing, dan alur stok.</p></article>
       </section>
       <section class="security-card"><div class="security-icon">🛡</div><div><strong>Sistem aman &amp; terpusat</strong><p>Data Anda tersimpan aman dan selalu terintegrasi.</p></div></section>
     </div>
@@ -265,7 +266,7 @@
     $('pinDel').addEventListener('click',()=>{ pinValue=pinValue.slice(0,-1); updateDots(); });
     $('pinOk').addEventListener('click', ()=>{ if(pinValue.length>0) tryLogin(); });
     $('logoutBtn').addEventListener('click', async () => { await sb.auth.signOut(); showLogin(); });
-    const moduleMap = { payroll:'https://radjaproduction.github.io/payroll/', pegawai:'https://radjaproduction.github.io/pegawai/', inventory:'https://radjaproduction.github.io/inventory/', pesanan:'https://radjaproduction.github.io/Pesanan/#home' };
+    const moduleMap = { payroll:'https://radjaproduction.github.io/payroll/', pegawai:'https://radjaproduction.github.io/pegawai/', inventory:'https://radjaproduction.github.io/inventory/', pesanan:'https://radjaproduction.github.io/Pesanan/#home', produksi:'https://radjaproduction.github.io/produksi/' };
     const frameView = $('moduleFrameView'), frame = $('moduleFrame'), moduleExitFab = $('moduleExitFab');
     let activeModuleKey = null;
     let isClosing = false; // flag: animasi close sedang berlangsung
